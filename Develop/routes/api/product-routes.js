@@ -8,7 +8,10 @@ router.get('/', (req, res) => {
   // find all products
   // be sure to include its associated Category and Tag data
   Product.findAll({
-    include : [ category, tag]
+  include: {
+    model: Category,
+    attributes: ['category_name']
+  },
   })
   .then (productData => res.json(productData))
   .catch (err => {
@@ -21,24 +24,20 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
-  Product.findone({
-    where: {
-      id: req.params.id
-    },
-    include: {
-      model: Category,
-      attributes: ['category_name']
-    },
-    include: {
-      model: Tag,
-      attributes: ['tag_name']
-    }
-  })
-  .then (productData => res.json(productData))
-  .catch (err => {
-    console.log(err);
-    res.status(500).json(err);
-  });
+Product.findOne({
+  where: {
+    id: req.params.id
+  },
+  include: {
+    model: Category,
+    attributes: ['category_name']
+  },
+})
+.then (productData => res.json(productData))
+.catch (err => {
+  console.log(err);
+  res.status(500).json(err);
+});
 });
 
 // create new product
